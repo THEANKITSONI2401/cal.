@@ -1,0 +1,395 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickCalc Pro</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(135deg, #101827, #293c59);
+}
+
+.calculator {
+    width: 100%;
+    max-width: 360px;
+    padding: 24px;
+    background: #182334;
+    border: 1px solid #40516b;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px #0006;
+}
+
+h1 {
+    text-align: center;
+    font-size: 28px;
+}
+
+h1 span {
+    color: #ffc04d;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aab8ca;
+    margin: 10px 0 22px;
+    font-size: 13px;
+}
+
+#display {
+    width: 100%;
+    height: 75px;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    background: #101827;
+    color: white;
+    text-align: right;
+    font-size: 30px;
+    padding: 15px;
+    margin-bottom: 16px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 9px;
+}
+
+.buttons button {
+    height: 55px;
+    border: none;
+    border-radius: 12px;
+    background: #29374b;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    filter: brightness(1.25);
+}
+
+.buttons .op {
+    color: #ffc04d;
+    background: #37465b;
+}
+
+.buttons .special {
+    background: #60432b;
+    color: #ffd18a;
+}
+
+.buttons .equal {
+    background: #ffc04d;
+    color: #182334;
+    font-weight: bold;
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+/* Subscription popup */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: #000b;
+    z-index: 10;
+}
+
+.overlay.show {
+    display: flex;
+}
+
+.popup {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    padding: 28px 22px;
+    text-align: center;
+    background: #182334;
+    border: 1px solid #ffc04d;
+    border-radius: 22px;
+    animation: appear .25s ease;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: scale(.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    color: white;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.crown {
+    font-size: 42px;
+    margin-bottom: 12px;
+}
+
+.popup h2 {
+    color: #ffc04d;
+    margin-bottom: 10px;
+}
+
+.popup p {
+    color: #c2ccda;
+    font-size: 14px;
+}
+
+.plan {
+    margin: 22px 0;
+    padding: 18px;
+    text-align: left;
+    border-radius: 14px;
+    background: #233147;
+}
+
+.plan h3 {
+    color: #ffc04d;
+    margin-bottom: 12px;
+}
+
+.plan h1 {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.plan small {
+    color: #bdc8d7;
+    font-size: 13px;
+}
+
+.plan p {
+    margin-top: 12px;
+}
+
+.subscribe {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #ffc04d;
+    color: #182334;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.note {
+    margin-top: 12px;
+}
+
+.later {
+    margin-top: 15px;
+    padding: 8px;
+    border: none;
+    background: none;
+    color: #bdc8d7;
+    cursor: pointer;
+}
+
+@media (max-width: 380px) {
+    .calculator {
+        padding: 17px;
+    }
+
+    .buttons {
+        gap: 7px;
+    }
+
+    .buttons button {
+        height: 50px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+    <h1>QuickCalc <span>Pro</span></h1>
+    <p class="subtitle">Smart & Simple Calculator</p>
+
+    <input id="display" value="0" readonly>
+
+    <div class="buttons">
+        <button class="special" onclick="clearAll()">AC</button>
+        <button class="special" onclick="removeLast()">DEL</button>
+        <button class="op" onclick="add('%')">%</button>
+        <button class="op" onclick="add('/')">÷</button>
+
+        <button onclick="add('7')">7</button>
+        <button onclick="add('8')">8</button>
+        <button onclick="add('9')">9</button>
+        <button class="op" onclick="add('*')">×</button>
+
+        <button onclick="add('4')">4</button>
+        <button onclick="add('5')">5</button>
+        <button onclick="add('6')">6</button>
+        <button class="op" onclick="add('-')">−</button>
+
+        <button onclick="add('1')">1</button>
+        <button onclick="add('2')">2</button>
+        <button onclick="add('3')">3</button>
+        <button class="op" onclick="add('+')">+</button>
+
+        <button class="zero" onclick="add('0')">0</button>
+        <button onclick="add('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<div class="overlay" id="popup">
+    <div class="popup">
+        <button class="close" onclick="closePopup()">×</button>
+
+        <div class="crown">👑</div>
+        <h2>Unlock Premium</h2>
+        <p>Your calculation is complete!</p>
+
+        <div class="plan">
+            <h3>QuickCalc Premium</h3>
+            <h1>₹0 <small>/ demo</small></h1>
+            <p>✓ Smart calculator</p>
+            <p>✓ Calculation history</p>
+            <p>✓ Premium interface</p>
+        </div>
+
+        <button class="subscribe" onclick="activatePremium()">
+            Try Premium Free
+        </button>
+
+        <p class="note" id="message">
+            Demo only · No payment required
+        </p>
+
+        <button class="later" onclick="closePopup()">
+            Maybe Later
+        </button>
+    </div>
+</div>
+
+<script>
+const display = document.getElementById("display");
+const popup = document.getElementById("popup");
+
+let expression = "";
+let finished = false;
+
+function update() {
+    display.value = expression || "0";
+}
+
+function add(value) {
+    if (finished) {
+        expression = "";
+        finished = false;
+    }
+
+    expression += value;
+    update();
+}
+
+function clearAll() {
+    expression = "";
+    finished = false;
+    update();
+}
+
+function removeLast() {
+    expression = expression.slice(0, -1);
+    finished = false;
+    update();
+}
+
+function calculate() {
+    if (!expression) return;
+
+    try {
+        if (!/^[0-9+\-*/%.() ]+$/.test(expression)) {
+            throw new Error("Invalid input");
+        }
+
+        const result = Function(
+            '"use strict"; return (' + expression + ')'
+        )();
+
+        if (!Number.isFinite(result)) {
+            throw new Error("Invalid calculation");
+        }
+
+        expression = String(Number(result.toPrecision(12)));
+        finished = true;
+        update();
+
+        // Calculation ke baad popup khulega
+        popup.classList.add("show");
+
+    } catch (error) {
+        display.value = "Invalid";
+        expression = "";
+        finished = false;
+    }
+}
+
+function closePopup() {
+    popup.classList.remove("show");
+}
+
+function activatePremium() {
+    document.getElementById("message").textContent =
+        "Premium demo activated! No payment was taken.";
+}
+
+document.addEventListener("keydown", function(event) {
+    if (/^[0-9.+\-*/%]$/.test(event.key)) {
+        add(event.key);
+    } else if (event.key === "Enter") {
+        calculate();
+    } else if (event.key === "Backspace") {
+        removeLast();
+    } else if (event.key === "Escape") {
+        closePopup();
+    } else if (event.key === "Delete") {
+        clearAll();
+    }
+});
+</script>
+
+</body>
+</html>
+```
